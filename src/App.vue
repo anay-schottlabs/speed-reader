@@ -1,6 +1,14 @@
 <script setup>
+import { ref } from 'vue';
+
 import Reader from './components/Reader.vue';
 import TextBox from './components/TextBox.vue';
+
+const text = ref("");
+
+function textUpdate(newText) {
+    text.value = newText;
+}
 </script>
 
 <template>
@@ -10,10 +18,10 @@ import TextBox from './components/TextBox.vue';
         </div>
         <div class="row flex-grow-1">
             <div class="col border border-2 border-black p-1">
-                <Reader />
+                <Reader :text="text" />
             </div>
             <div class="col border border-2 border-black p-1">
-                <TextBox />
+                <TextBox @textUpdate="textUpdate" />
             </div>
         </div>
     </div>

@@ -1,6 +1,11 @@
 <script setup>
 import { ref } from 'vue';
 
+// text in the textarea is passed down from App.vue
+const props = defineProps({
+    text: String
+});
+
 // enum to manage reader states
 const PlayState = Object.freeze({
     STOPPED: "stopped",
@@ -8,9 +13,10 @@ const PlayState = Object.freeze({
     PLAYING: "playing"
 });
 
-const playState = ref(PlayState.STOPPED)
+const playState = ref(PlayState.STOPPED);
 
 function parse() {
+    console.log(props.text);
 }
 
 function start() {
