@@ -1,11 +1,23 @@
 <script setup></script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div class="d-flex flex-column vh-100 p-3">
+    <div class="row">
+      <h1>Speed Reader</h1>
+    </div>
+    <div class="row flex-grow-1">
+      <div class="col border border-2 border-black">
+        <p>reading text</p>
+      </div>
+      <div class="col border border-2 border-black p-1">
+        <textarea class="form-control h-100"></textarea>
+      </div>
+    </div>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+  textarea {
+    resize: none;
+  }
+</style>
