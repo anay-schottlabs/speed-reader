@@ -17,10 +17,10 @@ function textUpdate(newText) {
             <h1>Speed Reader</h1>
         </div>
         <div class="row flex-grow-1">
-            <div class="col border border-2 border-black p-1">
+            <div class="col p-1">
                 <Reader :text="text" />
             </div>
-            <div class="col border border-2 border-black p-1">
+            <div class="col p-1">
                 <TextBox @textUpdate="textUpdate" />
             </div>
         </div>
