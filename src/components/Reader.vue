@@ -13,6 +13,10 @@ const wordList = ref([]);
 // the index of the current word in the word list
 const wordIndex = ref(0);
 
+const word = computed(() => {
+    return wordList.value[wordIndex.value];
+});
+
 const wpm = ref(60);
 const interval = computed(() => {
     // This computation determines the delay (in milliseconds) between showing each word,
@@ -167,7 +171,15 @@ function end() {
             </p>
             <!-- Show the word currently being displayed by the reader -->
             <p class="text-center fs-1 fw-bold">
-                {{ wordList[wordIndex] }}
+                {{
+                    word.slice(0, Math.floor(word.length / 2))
+                }}<span class="text-danger">
+                    {{
+                        word[Math.floor(word.length / 2)] 
+                    }}
+                </span>{{
+                    word.slice(Math.floor(word.length / 2) + 1, word.length)
+                }}
             </p>
             <!-- Controls to manually move through word list -->
             <div class="row" v-if="playState != PlayState.PLAYING">
