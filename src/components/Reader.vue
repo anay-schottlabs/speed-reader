@@ -108,6 +108,10 @@ function parse() {
 
 watch(() => props.text, parse, { immediate: true });
 
+// global variable to store the ID of the interval
+// this is a global var so that it can be accessed by several methods
+// the start() method sets the interval and stores the interval's ID
+// the pause() and end() methods clear the interval using the stored ID
 var readerLoop;
 
 function start() {
