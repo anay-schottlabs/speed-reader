@@ -3,7 +3,8 @@ import { ref, computed, watch } from 'vue';
 
 // text in the textarea is passed down from App.vue
 const props = defineProps({
-    text: String
+    text: String,
+    wpm: Number
 });
 
 // the list that will be used to play text
@@ -29,27 +30,11 @@ const afterRedLetter = computed(() => {
     return word.value.slice(Math.floor(word.value.length / 2) + 1, word.value.length);
 });
 
-const wpm = ref(60);
+const isOnLastWord = computed(() => wordIndex.value == wordList.value.length - 1);
+
 const interval = computed(() => {
-    // This computation determines the delay (in milliseconds) between showing each word,
-    // based on the current words per minute (wpm) setting.
-    //
-    // Explanation:
-    // - 60: There are 60 seconds in a minute.
-    // - wpm / 60: Converts words per minute to words per second.
-    // - 1000: There are 1000 milliseconds in one second.
-    //
-    // Steps:
-    // 1. Calculate how many words are shown per second (words per second = wpm / 60).
-    // 2. To determine the interval between words, take the length of one second (1000 ms)
-    //    and divide it by the number of words displayed per second.
-    //    This results in the number of milliseconds to wait between displaying each word.
-    //
-    // For example, at 120 wpm:
-    //   words per second = 120 / 60 = 2
-    //   interval = 1000 / 2 = 500 ms
-    //   (each word will be shown for 500 milliseconds)
-    return Math.floor(1000 / (wpm.value / 60));
+    // Delay (ms) between words, based on wpm passed from App.vue.
+    return Math.floor(1000 / (props.wpm / 60));
 });
 
 // enum to manage reader states
@@ -59,12 +44,7 @@ const PlayState = Object.freeze({
     PLAYING: "playing"
 });
 
-const didParse = ref(false);
-
 const playState = ref(PlayState.STOPPED);
-
-// time text was last parsed at
-const parsedAt = ref("");
 
 /**
  * Splits the input text from the textarea into a list of cleaned words.
@@ -100,22 +80,6 @@ function parse() {
     // Split the resulting string at each single space to create an array of words
     wordList.value = cleanText.split(" ");
     wordIndex.value = 0;
-
-    // store the time that the text was parsed at
-    parsedAt.value = new Date().toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true
-    });
-
-    // if the text is not empty, show the parsed words
-    if (wordList.value[0] != "") {
-        didParse.value = true;
-    }
-    // if the text is empty, hide the parsed words
-    else {
-        didParse.value = false;
-    }
 }
 
 watch(() => props.text, parse, { immediate: true });
@@ -165,7 +129,8 @@ function start() {
         else if (delayState.value == DelayState.NONE) {
             const lastChar = word.value[word.value.length - 1];
 
-            if (lastChar == ".") {
+            if ([".", "!", "?"].includes(lastChar)) {
+       
                 // Sentence end — start a long pause without advancing yet.
                 delayState.value = DelayState.LONG_PAUSE;
                 return;
@@ -204,17 +169,16 @@ function end() {
     <div class="d-flex flex-column">
 
         <!-- Reader Controls Section -->
-        <div v-if="didParse" class="btn-group mb-5">
+        <div class="btn-group mb-5">
             <!-- Show "Start/Continue Reader" if NOT currently playing -->
             <button
                 class="btn btn-primary"
-                v-if="playState != PlayState.PLAYING"
+                v-if="(playState == PlayState.STOPPED && !isOnLastWord) || playState == PlayState.PAUSED"
                 @click="start"
             >
                 {{ playState == PlayState.PAUSED ? "Continue Reader" : "Start Reader" }}
             </button>
 
-            <!-- Show "Pause Reader" button ONLY if currently playing -->
             <button
                 class="btn btn-warning"
                 v-if="playState == PlayState.PLAYING"
@@ -223,22 +187,18 @@ function end() {
                 Pause Reader
             </button>
 
-            <!-- Show "End Reader" unless already stopped -->
             <button
                 class="btn btn-danger"
-                v-if="playState != PlayState.STOPPED"
+                v-if="playState != PlayState.STOPPED || isOnLastWord"
                 @click="end"
             >
-                End Reader
+                {{ isOnLastWord ? "Restart Reader" : "End Reader" }}
             </button>
         </div>
 
-        <!-- Display parsed text info and the current word only after parsing -->
-        <div v-if="didParse" class="mt-5">
-            <hr>
-            <!-- Show time at which text was parsed -->
+        <div class="mt-5">
             <p class="text-center fs-6 fw-light">
-                Parsed at {{ parsedAt }}
+                {{ wpm }} words per minute
             </p>
             <!-- 
                 Main word reader display section.
@@ -324,9 +284,6 @@ function end() {
                 </div>
             </div>
 
-
-            <hr>
-
             <!-- progress bar for visual representation of reading progress -->
             <div class="my-5" style="position: relative; height: 30px;">
                 <!-- Visual progress bar background -->
@@ -359,30 +316,12 @@ function end() {
                         margin: 0;
                         z-index: 2;"
                     min="0"
-                    :max="wordList.length > 0 ? wordList.length - 1 : 0"
+                    :max="wordList.length - 1"
                     step="1"
                     v-model.number="wordIndex"
                     :disabled="playState == PlayState.PLAYING"
-                    aria-label="Seek Progress"
                 >
             </div>
-
-            <!-- words per minute slider -->
-            <input
-                type="range"
-                class="form-range"
-                min="60"
-                max="600"
-                step="10"
-                v-model.value="wpm"
-                :disabled="playState == PlayState.PLAYING"
-            >
-            <p
-                class="text-center fs-6 fw-light"
-            >Speed (words per minute): {{ wpm }}</p>
-            <p
-                class="text-center fs-6 fw-light"
-            >Estimated reading time (minutes): {{ Math.ceil(wordList.length * interval / 1000 / 60) }}</p>
         </div>
 
     </div>
