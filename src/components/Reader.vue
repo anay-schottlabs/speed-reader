@@ -193,7 +193,7 @@ function end() {
             >Speed (words per minute): {{ wpm }}</p>
             <p
                 class="text-center fs-6 fw-light"
-            >Estimated reading time (minutes): {{ wordList.length * interval / 1000 }}</p>
+            >Estimated reading time (minutes): {{ Math.ceil(wordList.length * interval / 1000 / 60) }}</p>
         </div>
 
     </div>
