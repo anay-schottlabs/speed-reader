@@ -17,6 +17,18 @@ const word = computed(() => {
     return wordList.value[wordIndex.value];
 });
 
+const beforeRedLetter = computed(() => {
+    return word.value.slice(0, Math.floor(word.value.length / 2));
+});
+
+const redLetter = computed(() => {
+    return word.value[Math.floor(word.value.length / 2)];
+});
+
+const afterRedLetter = computed(() => {
+    return word.value.slice(Math.floor(word.value.length / 2) + 1, word.value.length);
+});
+
 const wpm = ref(60);
 const interval = computed(() => {
     // This computation determines the delay (in milliseconds) between showing each word,
@@ -175,18 +187,7 @@ function end() {
             </p>
             <!-- Display the current word with its middle character highlighted in red -->
             <p class="text-center fs-1 fw-bold">
-                {{
-                    // Show the first half (before the middle character)
-                    word.slice(0, Math.floor(word.length / 2))
-                }}<span class="text-danger">
-                    {{
-                        // Highlight the middle character
-                        word[Math.floor(word.length / 2)] 
-                    }}
-                </span>{{
-                    // Show the second half (after the middle character)
-                    word.slice(Math.floor(word.length / 2) + 1, word.length)
-                }}
+                {{ beforeRedLetter }}<span class="text-danger">{{ redLetter }}</span>{{ afterRedLetter }}
             </p>
             <!-- Controls to manually move through word list -->
             <div class="row" v-if="playState != PlayState.PLAYING">
