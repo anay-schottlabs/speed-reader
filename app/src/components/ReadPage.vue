@@ -22,31 +22,31 @@ function triggerToast(message) {
 
 // form values
 const formText = ref(
-  "Welcome to Fast Lit!" +
-  " This app uses RSVP, or Rapid Serial Visual Presentation," +
-  " a technique that puts one word on the screen at a time." +
-  " This means you can focus on the words instead of having to move your eyes around," +
-  " making reading a lot faster!" +
-  " Plus, this technique also forces you to focus while you're reading," +
-  " making sure that you're both finishing the reading material" +
-  " and paying attention to what's being said." +
-  " In the settings tab above, you can paste in your own text to read," +
-  " or use the Fast Lit Grabber extension in your browser to quickly grab articles from webpages and send them right here with one click." +
-  " Just install the Fast Lit Grabber extension, open any article or web page you want to read," +
-  " and click 'Grab Text' in the extension popup." +
-  " Then, click 'Toss Text' in the extension to send the article directly into Fast Lit—no copy and paste required!" +
-  " You can also adjust the WPM, which stands for words per minute." +
-  " The default here is 300 WPM," +
-  " which is already faster than the average reading speed of 250 WPM." +
-  " As you practice with this reading technique and use the extension, you'll get better and better at it" +
-  " and be able to read faster and faster." +
-  " Plus, faster reading speeds help if you're just trying to skim content" +
-  " for a quick review." +
-  " You'll also notice the red letter in every word." +
-  " That's your focal point, which is what you should center your eyes on." +
-  " Then, use your peripheral vision to see the rest of the word," +
-  " preventing unnecessary movements that could slow you down or make you lose track." +
-  " That's all the tips for now, happy reading!"
+    "Welcome to Fast Lit!" +
+    " This app uses RSVP, or Rapid Serial Visual Presentation," +
+    " a technique that puts one word on the screen at a time." +
+    " This means you can focus on the words instead of having to move your eyes around," +
+    " making reading a lot faster!" +
+    " Plus, this technique also forces you to focus while you're reading," +
+    " making sure that you're both finishing the reading material" +
+    " and paying attention to what's being said." +
+    " In the settings tab above, you can paste in your own text to read," +
+    " or use the Fast Lit Grabber extension in your browser to quickly grab articles from webpages and send them right here with one click." +
+    " Just install the Fast Lit Grabber extension, open any article or web page you want to read," +
+    " and click 'Grab Text' in the extension popup." +
+    " Then, click 'Toss Text' in the extension to send the article directly into Fast Lit—no copy and paste required!" +
+    " You can also adjust the WPM, which stands for words per minute." +
+    " The default here is 300 WPM," +
+    " which is already faster than the average reading speed of 250 WPM." +
+    " As you practice with this reading technique and use the extension, you'll get better and better at it" +
+    " and be able to read faster and faster." +
+    " Plus, faster reading speeds help if you're just trying to skim content" +
+    " for a quick review." +
+    " You'll also notice the red letter in every word." +
+    " That's your focal point, which is what you should center your eyes on." +
+    " Then, use your peripheral vision to see the rest of the word," +
+    " preventing unnecessary movements that could slow you down or make you lose track." +
+    " That's all the tips for now, happy reading!"
 );
 const formWpm = ref(300);
 
@@ -152,7 +152,8 @@ function updateGrab() {
     settingsModal.show();
     grabberModalActive.value = false;
     formText.value = grabberExtractedText.value;
-    triggerToast("Grabbed article, placing in settings");
+    grabberExtractedText.value = "";
+    triggerToast("Grabbed article, placed in settings");
 }
 
 function cancelGrab() {
@@ -250,6 +251,7 @@ function cancelGrab() {
                         class="btn btn-primary"
                         @click="updateSettings"
                         data-bs-dismiss="modal"
+                        :disabled="formText.length == 0"
                     >Update</button>
                 </div>
             </div>
@@ -294,6 +296,7 @@ function cancelGrab() {
                     <button
                         class="btn btn-primary"
                         @click="updateGrab"
+                        :disabled="grabberExtractedText.length == 0"
                     >Update</button>
                 </div>
             </div>
