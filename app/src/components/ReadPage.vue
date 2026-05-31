@@ -43,9 +43,9 @@ function cancelSettings() {
     formWpm.value = wpm.value;
 }
 
-function loadFromGrabber(htmlString) {
+function loadFromGrabber(html) {
     console.log("Received data from extension (Fast Lit Grabber):")
-    console.log(htmlString);
+    console.log(html);
 }
 
 window.loadFromGrabber = loadFromGrabber;

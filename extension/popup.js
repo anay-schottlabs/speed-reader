@@ -1,5 +1,3 @@
-var htmlString;
-
 const getDataButton = document.querySelector("#getData");
 const injectDataButton = document.querySelector("#injectData");
 
@@ -17,10 +15,16 @@ async function getPageData() {
         func: () => document.documentElement.outerHTML
     });
 
-    htmlString = results[0].result;
+    const html = results[0].result;
 
     console.log("Grabbed HTML from page:");
-    console.log(htmlString);
+    console.log(html);
+
+    await chrome.storage.local.set({
+        grabbedHtml: html
+    });
+
+    console.log("Saved grabbed HTML to local storage.")
 }
 
 async function injectDataToFastLit() {
@@ -29,14 +33,23 @@ async function injectDataToFastLit() {
         currentWindow: true
     });
 
-    await chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        world: "MAIN",
-        func: (htmlString) => {
-            if (window.loadFromGrabber) {
-                window.loadFromGrabber(htmlString)
-            }
-        },
-        args: ["test HTML"]
-    });
+    const { grabbedHtml } = await chrome.storage.local.get("grabbedHtml");
+
+    if (grabbedHtml) {
+        console.log("Successfully loaded grabbed HTML, injecting data.");
+        await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            world: "MAIN",
+            func: (html) => {
+                if (window.loadFromGrabber) {
+                    window.loadFromGrabber(html);
+                }
+            },
+            args: [grabbedHtml]
+        });
+    }
+    else {
+        console.log("Could not load grabbed HTML, cannot inject data.");
+    }
+
 }
