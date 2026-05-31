@@ -16,10 +16,14 @@ const formText = ref(
   " making sure that you're both finishing the reading material" +
   " and paying attention to what's being said." +
   " In the settings tab above, you can paste in your own text to read," +
-  " and can also adjust the WPM, which stands for words per minute." +
+  " or use the Fast Lit Grabber extension in your browser to quickly grab articles from webpages and send them right here with one click." +
+  " Just install the Fast Lit Grabber extension, open any article or web page you want to read," +
+  " and click 'Grab Text' in the extension popup." +
+  " Then, click 'Toss Text' in the extension to send the article directly into Fast Lit—no copy and paste required!" +
+  " You can also adjust the WPM, which stands for words per minute." +
   " The default here is 300 WPM," +
   " which is already faster than the average reading speed of 250 WPM." +
-  " As you practice with this reading technique over time, you'll get better and better at it" +
+  " As you practice with this reading technique and use the extension, you'll get better and better at it" +
   " and be able to read faster and faster." +
   " Plus, faster reading speeds help if you're just trying to skim content" +
   " for a quick review." +
