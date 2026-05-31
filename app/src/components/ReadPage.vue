@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import { Readability } from '@mozilla/readability';
 
 import Reader from './Reader.vue';
 import LinedHeader from './LinedHeader.vue';
@@ -50,9 +51,13 @@ const grabberExtractedText = ref("");
 const grabberModalActive = ref(false);
 
 function loadFromGrabber(html) {
-    if (grabberModalActive) {
+    if (grabberModalActive.value) {
         console.log("Received data from extension (Fast Lit Grabber):")
         console.log(html);
+        const domParser = new DOMParser();
+        const doc = domParser.parseFromString(html, "text/html");
+        const article = new Readability(doc).parse();
+        grabberExtractedText.value = article.textContent;
     }
 }
 window.loadFromGrabber = loadFromGrabber;
@@ -64,10 +69,12 @@ function openGrabber() {
 
 function updateGrab() {
     grabberModalActive.value = false;
+    formText.value = grabberExtractedText.value;
 }
 
 function cancelGrab() {
     grabberModalActive.value = false;
+    grabberExtractedText.value = "";
 }
 </script>
 
@@ -119,7 +126,7 @@ function cancelGrab() {
             </div>
 
             <!-- modal body -->
-            <div class="modal-body d-flex flex-column">
+            <div class="modal-body">
                 <!-- section to choose words per minute of reader -->
                 <LinedHeader text="Choose WPM" />
                 <div>
@@ -146,9 +153,10 @@ function cancelGrab() {
                 </div>
                 <!-- section to manually paste text in -->
                 <LinedHeader text="Paste Text" />
-                <div class="flex-grow-1">
+                <div>
                     <textarea
-                        class="form-control h-100"
+                        class="form-control"
+                        style="height: 300px;"
                         placeholder="Paste some text to start reading..."
                         v-model="formText"
                     ></textarea>
@@ -212,6 +220,8 @@ function cancelGrab() {
                         class="btn btn-primary"
                         @click="updateGrab"
                         data-bs-dismiss="modal"
+                        data-bs-toggle="modal"
+                        data-bs-target="#settingsModal"
                     >Update</button>
                 </div>
             </div>
