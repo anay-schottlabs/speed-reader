@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 
 import Reader from './Reader.vue';
+import LinedHeader from './LinedHeader.vue';
 
 // form values
 const formText = ref(
@@ -43,12 +44,31 @@ function cancelSettings() {
     formWpm.value = wpm.value;
 }
 
+// handling grabber extension
+
+const grabberExtractedText = ref("");
+const grabberModalActive = ref(false);
+
 function loadFromGrabber(html) {
-    console.log("Received data from extension (Fast Lit Grabber):")
-    console.log(html);
+    if (grabberModalActive) {
+        console.log("Received data from extension (Fast Lit Grabber):")
+        console.log(html);
+    }
+}
+window.loadFromGrabber = loadFromGrabber;
+
+function openGrabber() {
+    updateSettings();
+    grabberModalActive.value = true;
 }
 
-window.loadFromGrabber = loadFromGrabber;
+function updateGrab() {
+    grabberModalActive.value = false;
+}
+
+function cancelGrab() {
+    grabberModalActive.value = false;
+}
 </script>
 
 <template>
@@ -77,9 +97,9 @@ window.loadFromGrabber = loadFromGrabber;
         </div>
     </div>
 
-    <!-- modal -->
+    <!-- settings modal -->
     <div id="settingsModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-body modal-content h-75">
+        <div class="modal-dialog modal-dialog-scrollable modal-body modal-content h-75">
             <!-- modal header -->
             <div class="modal-header border-0">
                 <!-- Close button in top left corner -->
@@ -100,6 +120,8 @@ window.loadFromGrabber = loadFromGrabber;
 
             <!-- modal body -->
             <div class="modal-body d-flex flex-column">
+                <!-- section to choose words per minute of reader -->
+                <LinedHeader text="Choose WPM" />
                 <div>
                     <input
                         type="range"
@@ -111,6 +133,19 @@ window.loadFromGrabber = loadFromGrabber;
                     >
                     <p class="fs-5">{{ formWpm }} words per minute</p>
                 </div>
+                <!-- section to open grabber modal to interact with extension -->
+                <LinedHeader text="Grab Text" />
+                <div>
+                    <button
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        @click="openGrabber"
+                        data-bs-toggle="modal"
+                        data-bs-target="#grabberModal"
+                    >Use Grabber</button>
+                </div>
+                <!-- section to manually paste text in -->
+                <LinedHeader text="Paste Text" />
                 <div class="flex-grow-1">
                     <textarea
                         class="form-control h-100"
@@ -126,6 +161,56 @@ window.loadFromGrabber = loadFromGrabber;
                     <button
                         class="btn btn-primary"
                         @click="updateSettings"
+                        data-bs-dismiss="modal"
+                    >Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- grabber modal -->
+    <div id="grabberModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-body modal-content h-75">
+            <!-- modal header -->
+            <div class="modal-header border-0">
+                <!-- Close button in top left corner -->
+                <button
+                    type="button"
+                    class="btn position-absolute start-0 top-0 ms-2 mt-2 p-2"
+                    data-bs-dismiss="modal"
+                    style="z-index:2;"
+                    @click="cancelGrab"
+                >
+                    <i class="bi bi-x-lg fs-4"></i>
+                </button>
+                <!-- Centered settings text -->
+                <div class="col text-center">
+                    <span class="fs-2">Grabbing Articles</span>
+                </div>
+            </div>
+
+            <!-- modal body -->
+            <div class="modal-body d-flex flex-column">
+                <div>
+                    <p class="fs-5">
+                        Use the Fast Lit Grabber extension in your browser.
+                    </p>
+                </div>
+                <div class="flex-grow-1">
+                    <textarea
+                        class="form-control h-100"
+                        :value="grabberExtractedText"
+                        readonly
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- modal footer -->
+            <div class="modal-footer w-100 border-0">
+                <div class="d-grid w-100">
+                    <button
+                        class="btn btn-primary"
+                        @click="updateGrab"
                         data-bs-dismiss="modal"
                     >Update</button>
                 </div>
