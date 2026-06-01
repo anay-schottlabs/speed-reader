@@ -273,7 +273,7 @@ function end() {
 
 
     <!-- Controls to manually move through word list -->
-    <div class="flex gap-5" v-if="playState != PlayState.PLAYING">
+    <div class="flex gap-5 mb-5">
         <!-- button to move to previous word -->
         <button
             class="btn !text-red bg-white transition-opacity duration-200 grow"
@@ -281,7 +281,7 @@ function end() {
                 'opacity-50': wordIndex == 0,
                 'opacity-100 hover:opacity-80': wordIndex !== 0
             }"
-            :disabled="wordIndex == 0"
+            :disabled="wordIndex == 0 || playState == PlayState.PLAYING"
             @click="wordIndex--"
         >Previous</button>
         <!-- button to move to next word -->
@@ -291,49 +291,21 @@ function end() {
                 'opacity-50': wordIndex == wordList.length - 1,
                 'opacity-100 hover:opacity-80': wordIndex !== wordList.length - 1
             }"
-            :disabled="wordIndex == wordList.length - 1"
+            :disabled="wordIndex == wordList.length - 1 || playState == PlayState.PLAYING"
             @click="wordIndex++"
         >Next</button>
     </div>
 
     <!-- progress bar for visual representation of reading progress -->
-    <div class="my-5" style="position: relative; height: 30px;">
-        <!-- Visual progress bar background -->
-        <div class="progress" style="height: 100%;">
-            <div
-                v-if="wordIndex == 0"
-                class="progress-bar progress-bar-striped no-transition"
-                style="width: 0%"
-            ></div>
-            <div
-                v-else
-                class="progress-bar progress-bar-striped no-transition"
-                :class="playState == PlayState.PLAYING ? 'progress-bar-animated' : ''"
-                :style="{ width: `${(wordIndex + 1) / wordList.length * 100}%` }"
-            ></div>
-        </div>
-
-        <!-- Draggable slider overlay for seeking -->
-        <input
-            type="range"
-            class="form-range"
-            style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                opacity: 0;
-                cursor: pointer;
-                margin: 0;
-                z-index: 2;"
-            min="0"
-            :max="wordList.length - 1"
-            step="1"
-            v-model.number="wordIndex"
-            :disabled="playState == PlayState.PLAYING"
-        >
-    </div>
+    <input
+        type="range"
+        min="0"
+        :max="wordList.length - 1"
+        v-model="wordIndex"
+        class="range w-full"
+        :disabled="playState == PlayState.PLAYING"
+        :style="playState == PlayState.PLAYING ? 'opacity: 1; pointer-events: none;' : ''"
+    />
 </template>
 
 <style scoped></style>
