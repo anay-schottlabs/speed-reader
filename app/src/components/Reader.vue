@@ -210,6 +210,11 @@ function end() {
 <template>
     <!-- Reader Controls Section -->
     <div class="flex gap-5">
+        <!-- 
+            Start/Continue Button:
+            - Visible when the reader is stopped and not at the last word (initial state or after hitting "End"), or paused.
+            - Shows "Start Reader" if never started or after ending, or "Continue Reader" if paused.
+        -->
         <button
             v-if="(playState == PlayState.STOPPED && !isOnLastWord) || playState == PlayState.PAUSED"
             class="btn bg-red grow"
@@ -218,6 +223,11 @@ function end() {
             {{ playState == PlayState.PAUSED ? "Continue Reader" : "Start Reader" }}
         </button>
 
+        <!-- 
+            Pause Button:
+            - Visible only when the reader is actively playing.
+            - Lets the user pause the reading session.
+        -->
         <button
             v-if="playState == PlayState.PLAYING"
             class="btn bg-red grow"
@@ -226,6 +236,11 @@ function end() {
             Pause Reader
         </button>
 
+        <!-- 
+            End/Restart Button:
+            - Visible while playing, paused, or when on the last word.
+            - Shows "End Reader" during play or pause, or "Restart Reader" at the last word.
+        -->
         <button
             v-if="playState != PlayState.STOPPED || isOnLastWord"
             class="btn bg-red grow"
@@ -242,15 +257,18 @@ function end() {
     
     <!-- main word reader display -->
     <div class="text-7xl font-bold text-center my-30 flex">
-        <span
-            class="flex-1 text-right"
-        >{{ beforeRedLetter }}</span>
-        <span
-            class="text-red"
-        >{{ redLetter }}</span>
-        <span
-            class="flex-1 text-left"
-        >{{ afterRedLetter }}</span>
+        <!-- Shows the part of the word before the highlighted letter, right-aligned within its flex space -->
+        <span class="flex-1 text-right">
+            {{ beforeRedLetter }}
+        </span>
+        <!-- Displays the single red-highlighted letter for optimal reading focus -->
+        <span class="text-red">
+            {{ redLetter }}
+        </span>
+        <!-- Shows the part of the word after the highlighted letter, left-aligned within its flex space -->
+        <span class="flex-1 text-left">
+            {{ afterRedLetter }}
+        </span>
     </div>
 
 
