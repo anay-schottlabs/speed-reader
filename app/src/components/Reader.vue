@@ -210,160 +210,109 @@ function end() {
 <template>
     <!-- Reader Controls Section -->
     <div class="flex gap-5">
-        <!-- <div class="flex w-full gap-2"> -->
-            <button
-                v-if="(playState == PlayState.STOPPED && !isOnLastWord) || playState == PlayState.PAUSED"
-                class="btn bg-red grow"
-                @click="start"
-            >
-                {{ playState == PlayState.PAUSED ? "Continue Reader" : "Start Reader" }}
-            </button>
-
-            <button
-                v-if="playState == PlayState.PLAYING"
-                class="btn bg-red grow"
-                @click="pause"
-            >
-                Pause Reader
-            </button>
-
-            <button
-                v-if="playState != PlayState.STOPPED || isOnLastWord"
-                class="btn bg-red grow"
-                @click="end"
-            >
-                {{ isOnLastWord ? "Restart Reader" : "End Reader" }}
-            </button>
-        <!-- </div> -->
-    </div>
-    
-
-    <div class="mt-5">
-        <p class="text-center fs-6 fw-light">
-            {{ wpm }} words per minute
-        </p>
-        <!-- 
-            Main word reader display section.
-
-            This part centers and aligns the current word broken into three segments:
-                - beforeRedLetter: Characters before the "pivot" (middle letter)
-                - redLetter: The "pivot" character, visually emphasized in red for the "Optimal Recognition Point"
-                - afterRedLetter: Characters after the "pivot" letter
-            
-            The styling ensures the pivot letters of different words always appear in the same horizontal spot, 
-            minimizing eye movement and maximizing reading speed. Each <span> uses both Bootstrap classes and specific inline styles:
-
-                - min-width: Ensures each segment (left, pivot, right) reserves minimum space, so short words don't collapse layout
-                - white-space: pre; Keeps spacing and disables word breaks, so alignment remains stable
-                - margin & padding tweaks: Remove unwanted extra space between or around spans to keep the focus point rock-steady
-                - text alignment: Each span is aligned (left, center, right) to consistently frame the red letter
-
-            The containing <div> centers everything and sets a vertical height for a pleasant visual anchor.
-        -->
-        <div
-            class="d-flex justify-content-center align-items-center"
-            style="height: 6em;"
+        <button
+            v-if="(playState == PlayState.STOPPED && !isOnLastWord) || playState == PlayState.PAUSED"
+            class="btn bg-red grow"
+            @click="start"
         >
-            <!--
-                beforeRedLetter:
-                    - text-end: Right-aligns the text for consistent left edge
-                    - fs-1 fw-bold: Large, bold font for readability
-                    - white-space: pre;   Ensures spaces are preserved, disables wrapping
-                    - min-width: 4ch;     Forces this "slot" to be at least 4 characters wide, so the pivot letter is always horizontally aligned (even for short words)
-                    - margin-right, padding-right: 0;   Removes any default spacing, so left segment sits flush against the red letter
-            -->
-            <span
-                class="text-end fs-1 fw-bold"
-                style="white-space: pre; min-width: 4ch; margin-right: 0; padding-right: 0;"
-            >{{ beforeRedLetter }}</span>
-            
-            <!--
-                redLetter:
-                    - text-danger: Makes letter red to mark the Optimal Recognition Point for reading
-                    - text-center, fs-1, fw-bold: Centered, large, bold visual
-                    - min-width: 1ch;   Ensures at least 1 character slot regardless of content (prevents jitter)
-                    - margin, padding: 0; Keeps letter tightly spaced to left/right, prevents gaps from growing due to font/DOM quirks
-            -->
-            <span
-                class="text-danger text-center fs-1 fw-bold"
-                style="min-width: 1ch; margin: 0; padding: 0;"
-            >{{ redLetter }}</span>
-            
-            <!--
-                afterRedLetter:
-                    - text-start: Left-aligns text so any trailing characters do not interfere with the pivot
-                    - fs-1 fw-bold: Large, bold font for consistency
-                    - white-space: pre;   Prevents wrapping, preserves alignment
-                    - min-width: 4ch;     Pads the right segment equally to the left, for symmetric "slots"
-                    - margin-left, padding-left: 0;   No spacing between this and the red letter, so segments are snug
-            -->
-            <span
-                class="text-start fs-1 fw-bold"
-                style="white-space: pre; min-width: 4ch; margin-left: 0; padding-left: 0;"
-            >{{ afterRedLetter }}</span>
+            {{ playState == PlayState.PAUSED ? "Continue Reader" : "Start Reader" }}
+        </button>
+
+        <button
+            v-if="playState == PlayState.PLAYING"
+            class="btn bg-red grow"
+            @click="pause"
+        >
+            Pause Reader
+        </button>
+
+        <button
+            v-if="playState != PlayState.STOPPED || isOnLastWord"
+            class="btn bg-red grow"
+            @click="end"
+        >
+            {{ isOnLastWord ? "Restart Reader" : "End Reader" }}
+        </button>
+    </div>
+
+    <!-- display words per minute -->
+    <p class="mt-5 text-center text-lg">
+        {{ wpm }} words per minute
+    </p>
+    
+    <!-- main word reader display -->
+    <div class="text-7xl font-bold text-center my-30 flex">
+        <span
+            class="flex-1 text-right"
+        >{{ beforeRedLetter }}</span>
+        <span
+            class="text-red"
+        >{{ redLetter }}</span>
+        <span
+            class="flex-1 text-left"
+        >{{ afterRedLetter }}</span>
+    </div>
+
+
+    <!-- Controls to manually move through word list -->
+    <div class="row" v-if="playState != PlayState.PLAYING">
+        <!-- button to move to previous word -->
+        <div class="col d-grid">
+            <button
+                class="btn btn-warning"
+                :disabled="wordIndex == 0"
+                @click="wordIndex--"
+            >Previous</button>
+        </div>
+        <!-- spacer -->
+        <div class="col"></div>
+        <!-- button to move to next word -->
+        <div class="col d-grid">
+            <button
+                class="btn btn-warning"
+                :disabled="wordIndex == wordList.length - 1"
+                @click="wordIndex++"
+            >Next</button>
+        </div>
+    </div>
+
+    <!-- progress bar for visual representation of reading progress -->
+    <div class="my-5" style="position: relative; height: 30px;">
+        <!-- Visual progress bar background -->
+        <div class="progress" style="height: 100%;">
+            <div
+                v-if="wordIndex == 0"
+                class="progress-bar progress-bar-striped no-transition"
+                style="width: 0%"
+            ></div>
+            <div
+                v-else
+                class="progress-bar progress-bar-striped no-transition"
+                :class="playState == PlayState.PLAYING ? 'progress-bar-animated' : ''"
+                :style="{ width: `${(wordIndex + 1) / wordList.length * 100}%` }"
+            ></div>
         </div>
 
-
-        <!-- Controls to manually move through word list -->
-        <div class="row" v-if="playState != PlayState.PLAYING">
-            <!-- button to move to previous word -->
-            <div class="col d-grid">
-                <button
-                    class="btn btn-warning"
-                    :disabled="wordIndex == 0"
-                    @click="wordIndex--"
-                >Previous</button>
-            </div>
-            <!-- spacer -->
-            <div class="col"></div>
-            <!-- button to move to next word -->
-            <div class="col d-grid">
-                <button
-                    class="btn btn-warning"
-                    :disabled="wordIndex == wordList.length - 1"
-                    @click="wordIndex++"
-                >Next</button>
-            </div>
-        </div>
-
-        <!-- progress bar for visual representation of reading progress -->
-        <div class="my-5" style="position: relative; height: 30px;">
-            <!-- Visual progress bar background -->
-            <div class="progress" style="height: 100%;">
-                <div
-                    v-if="wordIndex == 0"
-                    class="progress-bar progress-bar-striped no-transition"
-                    style="width: 0%"
-                ></div>
-                <div
-                    v-else
-                    class="progress-bar progress-bar-striped no-transition"
-                    :class="playState == PlayState.PLAYING ? 'progress-bar-animated' : ''"
-                    :style="{ width: `${(wordIndex + 1) / wordList.length * 100}%` }"
-                ></div>
-            </div>
-
-            <!-- Draggable slider overlay for seeking -->
-            <input
-                type="range"
-                class="form-range"
-                style="
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    opacity: 0;
-                    cursor: pointer;
-                    margin: 0;
-                    z-index: 2;"
-                min="0"
-                :max="wordList.length - 1"
-                step="1"
-                v-model.number="wordIndex"
-                :disabled="playState == PlayState.PLAYING"
-            >
-        </div>
+        <!-- Draggable slider overlay for seeking -->
+        <input
+            type="range"
+            class="form-range"
+            style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                cursor: pointer;
+                margin: 0;
+                z-index: 2;"
+            min="0"
+            :max="wordList.length - 1"
+            step="1"
+            v-model.number="wordIndex"
+            :disabled="playState == PlayState.PLAYING"
+        >
     </div>
 </template>
 
