@@ -208,60 +208,6 @@ function end() {
 </script>
 
 <template>
-    <!-- Reader Controls Section -->
-    <div class="flex gap-5">
-        <!-- 
-            Start/Continue Button:
-            - Visible when the reader is stopped and not at the last word (initial state or after hitting "End"), or paused.
-            - Shows "Start Reader" if never started or after ending, or "Continue Reader" if paused.
-        -->
-        <button
-            v-if="(playState == PlayState.STOPPED && !isOnLastWord) || playState == PlayState.PAUSED"
-            class="btn bg-red grow transition-opacity duration-200"
-            :class="{
-                'opacity-100 hover:opacity-80': playState == PlayState.STOPPED || playState == PlayState.PAUSED
-            }"
-            @click="start"
-        >
-            {{ playState == PlayState.PAUSED ? "Continue Reader" : "Start Reader" }}
-        </button>
- 
- 
-
-        <!-- 
-            Pause Button:
-            - Visible only when the reader is actively playing.
-            - Lets the user pause the reading session.
-        -->
-        <button
-            v-if="playState == PlayState.PLAYING"
-            class="btn bg-red grow transition-opacity duration-200"
-            :class="{'opacity-100 hover:opacity-80': playState == PlayState.PLAYING}"
-            @click="pause"
-        >
-  
-  
-            Pause Reader
-        </button>
-
-        <!-- 
-            End/Restart Button:
-            - Visible while playing, paused, or when on the last word.
-            - Shows "End Reader" during play or pause, or "Restart Reader" at the last word.
-        -->
-        <button
-            v-if="playState != PlayState.STOPPED || isOnLastWord"
-            class="btn bg-red grow transition-opacity duration-200"
-            :class="{
-                'opacity-100 hover:opacity-80': playState != PlayState.STOPPED || isOnLastWord
-            }"
-            @click="end"
-        >
-            {{ isOnLastWord ? "Restart Reader" : "End Reader" }}
-        </button>
- 
-    </div>
-
     <!-- display words per minute -->
     <p class="mt-5 text-center text-lg">
         {{ wpm }} words per minute
@@ -283,41 +229,169 @@ function end() {
         </span>
     </div>
 
-
-    <!-- Controls to manually move through word list -->
-    <div class="flex gap-5 mb-5">
-        <!-- button to move to previous word -->
-        <button
-            class="btn !text-red bg-white transition-opacity duration-200 grow"
-            :class="{
-                'opacity-50': wordIndex == 0,
-                'opacity-100 hover:opacity-80': wordIndex !== 0
-            }"
-            :disabled="wordIndex == 0 || playState == PlayState.PLAYING"
-            @click="wordIndex--"
-        >Previous</button>
-        <!-- button to move to next word -->
-        <button
-            class="btn !text-red bg-white transition-opacity duration-200 grow"
-            :class="{
-                'opacity-50': wordIndex == wordList.length - 1,
-                'opacity-100 hover:opacity-80': wordIndex !== wordList.length - 1
-            }"
-            :disabled="wordIndex == wordList.length - 1 || playState == PlayState.PLAYING"
-            @click="wordIndex++"
-        >Next</button>
-    </div>
-
     <!-- progress bar for visual representation of reading progress -->
     <input
         type="range"
         min="0"
         :max="wordList.length - 1"
         v-model="wordIndex"
-        class="range w-full"
+        class="range w-full mb-10"
         :disabled="playState == PlayState.PLAYING"
         :style="playState == PlayState.PLAYING ? 'opacity: 1; pointer-events: none;' : ''"
     />
+
+    <!-- reader controls section -->
+    <div class="flex gap-5 justify-center items-center">
+        <!-- button to move to previous word -->
+        <button
+            class="btn btn-square !text-red bg-white transition-opacity duration-200 opacity-100 hover:opacity-80 disabled:opacity-50"
+            :disabled="wordIndex == 0 || playState == PlayState.PLAYING"
+            @click="wordIndex--"
+            style="width: 3.5rem; height: 3.5rem; min-width: 3.5rem; min-height: 3.5rem;"
+        >
+            <svg
+                viewBox="0 0 64 64"
+                width="2.5rem"
+                height="2.5rem"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                focusable="false"
+            >
+                <!-- Larger rounded square background, matching others, radius = 8 -->
+                <rect
+                    x="6"
+                    y="6"
+                    width="52"
+                    height="52"
+                    rx="9"
+                    fill="#fff"
+                />
+                <!-- Larger, thicker left arrow (flip of original) -->
+                <polyline
+                    points="34,18 20,32 34,46"
+                    fill="none"
+                    stroke="#E43247"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+            </svg>
+        </button>
+
+        <!-- play button -->
+        <button
+            class="btn btn-square bg-red transition-opacity duration-200 hover:opacity-80"
+            style="width: 3.5rem; height: 3.5rem; min-width: 3.5rem; min-height: 3.5rem;"
+            @click="start"
+            v-if="playState != PlayState.PLAYING"
+        >
+  
+            <svg
+                viewBox="0 0 48 48"
+                width="2rem"
+                height="2rem"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                focusable="false"
+            >
+                <path
+                    d="M10,8
+                       Q8,8 8,10
+                       L8,38
+                       Q8,40 10,40
+                       L38,24
+                       Q40,23 38,22
+                       Z"
+                    fill="#fff"
+                />
+            </svg>
+        </button>
+
+        <!-- pause button -->
+        <button
+            class="btn btn-square bg-red transition-opacity duration-200 hover:opacity-80"
+            style="width: 3.5rem; height: 3.5rem; min-width: 3.5rem; min-height: 3.5rem;"
+            @click="pause"
+            v-if="playState == PlayState.PLAYING"
+        >
+            <svg
+                viewBox="0 0 8 8"
+                width="2rem"
+                height="2rem"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                focusable="false"
+            >
+                <g>
+                    <!-- Give each bar a rounded radius of 0.5 to match visual style of stop button (proportional: stop uses rx=8 for 48x48 box, so rx=0.5 for 2x6 bar) -->
+                    <rect x="1" y="1" width="2" height="6" rx="0.5" fill="#fff" />
+                    <rect x="5" y="1" width="2" height="6" rx="0.5" fill="#fff" />
+                </g>
+            </svg>
+        </button>
+
+        <!-- stop/reset button -->
+        <button
+            class="btn btn-square bg-red transition-opacity duration-200 hover:opacity-80"
+            style="width: 3.5rem; height: 3.5rem; min-width: 3.5rem; min-height: 3.5rem;"
+            @click="end"
+        >
+            <svg
+                viewBox="0 0 64 64"
+                width="2rem"
+                height="2rem"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                focusable="false"
+            >
+                <!-- Rounded square with same r as play (roughly 8 for 2rem button) -->
+                <rect
+                    x="8"
+                    y="8"
+                    width="48"
+                    height="48"
+                    rx="8"
+                    fill="#fff"
+                />
+            </svg>
+        </button>
+
+        <!-- button to move to next word -->
+        <button
+            class="btn btn-square !text-red bg-white transition-opacity duration-200 hover:opacity-80 disabled:opacity-50"
+            :disabled="wordIndex == wordList.length - 1 || playState == PlayState.PLAYING"
+            @click="wordIndex++"
+            style="width: 3.5rem; height: 3.5rem; min-width: 3.5rem; min-height: 3.5rem;"
+        >
+            <svg
+                viewBox="0 0 64 64"
+                width="2.5rem"
+                height="2.5rem"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+                focusable="false"
+            >
+                <!-- Larger rounded square background, matching others, radius = 8 -->
+                <rect
+                    x="6"
+                    y="6"
+                    width="52"
+                    height="52"
+                    rx="9"
+                    fill="#fff"
+                />
+                <!-- Larger, thicker right arrow -->
+                <polyline
+                    points="30,18 44,32 30,46"
+                    fill="none"
+                    stroke="#E43247"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+            </svg>
+        </button>
+    </div>
 </template>
 
 <style scoped></style>
