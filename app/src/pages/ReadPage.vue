@@ -4,7 +4,7 @@ import { Readability } from '@mozilla/readability';
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
-import Reader from './Reader.vue';
+import Reader from '../components/Reader.vue';
 
 // form values
 const formText = ref(

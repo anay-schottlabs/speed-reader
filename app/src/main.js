@@ -3,10 +3,10 @@ import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import Vue3Toastify from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-import HomePage from './components/HomePage.vue';
-import ReadPage from './components/ReadPage.vue';
-import ChangelogPage from './components/ChangelogPage.vue';
-import FeedbackPage from './components/FeedbackPage.vue';
+import HomePage from './pages/HomePage.vue';
+import ReadPage from './pages/ReadPage.vue';
+import ChangelogPage from './pages/ChangelogPage.vue';
+import FeedbackPage from './pages/FeedbackPage.vue';
 
 const router = createRouter({
     history: createWebHistory(),
