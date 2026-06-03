@@ -9,7 +9,7 @@ import Reader from '../components/Reader.vue';
 
 const minWpm = 60;
 const maxWpm = 600;
-const wpmStep = 10;
+const wpmStep = 20;
 
 const reader = useTemplateRef("reader");
 
@@ -46,6 +46,12 @@ const formWpm = ref(300);
 // persistent values
 const text = ref(formText.value);
 const wpm = ref(formWpm.value);
+
+// function accessed by Reader.vue to change WPM with arrow keys
+function setWpm(newWpm) {
+    wpm.value = newWpm;
+    formWpm.value = newWpm;
+}
 
 // toasts
 const ToastType = Object.freeze({
@@ -244,7 +250,7 @@ function cancelGrab() {
             :min-wpm="minWpm"
             :max-wpm="maxWpm"
             :wpm-step="wpmStep"
-            @set-wpm="(newWpm) => wpm = newWpm"
+            @set-wpm="setWpm"
         />
     </div>
 
