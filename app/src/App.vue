@@ -25,15 +25,15 @@ function navigateTo(path) {
             </div>
         </div>
 
-        <div
+        <!-- <div
             class="min-h-screen drawer-side"
             :class="[
                     'is-drawer-close:' + drawerCloseWidth,
                     'is-drawer-open:' + drawerOpenWidth
                 ]"
-        ></div>
+        ></div> -->
 
-        <div class="drawer-side is-drawer-close:overflow-visible fixed">
+        <div class="drawer-side is-drawer-close:overflow-visible">
             <!-- Make the sidebar white by using bg-white instead of bg-base-200 -->
             <div
                 class="flex min-h-full flex-col items-start bg-white"
