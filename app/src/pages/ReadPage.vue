@@ -288,6 +288,63 @@ const settingsModal = ref(false);
                         v-model="formText"
                     ></textarea>
                 </div>
+
+                <!-- keyboard shortcuts display -->
+                <p class="divider mt-10">Keyboard Shortcuts</p>
+                <ul class="list">
+                    <!-- play/pause button -->
+                    <li class="list-row">
+                        <div>
+                            <kbd class="kbd kbd-xl bg-white text-gray-800 border border-gray-300 shadow">space</kbd>                      
+                        </div>
+                        <div class="list-col-grow flex items-center">
+                            <div>Play / Pause</div>
+                        </div>
+                    </li>
+
+                    <!-- reset button -->
+                    <li class="list-row">
+                        <div>
+                            <span class="inline-flex gap-2">
+                                <kbd class="kbd kbd-xl bg-white text-gray-800 border border-gray-300 shadow">r</kbd>
+                                <!-- invisible kbd element to take up space so that all text is aligned properly -->
+                                <kbd
+                                    class="kbd kbd-xl bg-white text-gray-800 border border-gray-300 shadow"
+                                    style="visibility: hidden;"
+                                ></kbd>                          
+                            </span>          
+                        </div>
+                        <div class="list-col-grow flex items-center">
+                            <div>Restart Player</div>
+                        </div>
+                    </li>
+
+                    <!-- word index controls -->
+                    <li class="list-row">
+                        <div>
+                            <span class="inline-flex gap-2">
+                                <kbd class="kbd kbd-xl bg-white text-gray-800 border border-gray-300 shadow">◀︎</kbd>
+                                <kbd class="kbd kbd-xl bg-white text-gray-800 border border-gray-300 shadow">▶︎</kbd>
+                            </span>
+                        </div>
+                        <div class="list-col-grow flex items-center">
+                            <div>Previous / Next Word</div>
+                        </div>
+                    </li>
+
+                    <!-- words per minute controls -->
+                    <li class="list-row">
+                        <div>
+                            <span class="inline-flex gap-2">
+                                <kbd class="kbd kbd-xl bg-white text-gray-800 border border-gray-300 shadow">▲</kbd>
+                                <kbd class="kbd kbd-xl bg-white text-gray-800 border border-gray-300 shadow">▼</kbd>
+                            </span>
+                        </div>
+                        <div class="list-col-grow flex items-center">
+                            <div>Increase / Decrease Speed</div>
+                        </div>
+                    </li>
+                </ul>
             </div>
 
             <!-- button to update changes to settings -->
@@ -300,7 +357,6 @@ const settingsModal = ref(false);
                 @click="updateSettings"
                 :disabled="formText.length == 0"
             >Update</button>
-      
         </div>
     </dialog>
 </template>
