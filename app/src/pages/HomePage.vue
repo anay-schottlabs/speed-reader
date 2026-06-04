@@ -32,7 +32,7 @@ function navigateTo(path) {
         <div class="hero my-20">
             <div class="hero-content text-center">
                 <div class="max-w-3xl mx-auto px-4">
-                    <h1 class="text-7xl font-bold text-red whitespace-normal">
+                    <h1 class="text-7xl font-bold !text-red whitespace-normal">
                         {{ HomeScripts.heroTitle }}
                     </h1>
                     <p class="py-6">
