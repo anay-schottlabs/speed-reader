@@ -99,6 +99,13 @@ export class ChangelogScripts {
             text([
                 "Published Fast Lit to the internet."
             ])
+        ),
+        new this.Entry(
+            "June 3, 2026",
+            "1.1.0",
+            text([
+                "Simplified usage for Fast Lit Grabber extension and removed grabber modal in settings."
+            ])
         )
     ]
 }
