@@ -15,12 +15,16 @@ import { ChangelogScripts } from '@/assets/textScripts.js';
                 v-for="(entry, idx) in ChangelogScripts.changelog"
                 :key="entry.version"
             >
+                <!-- Display the entry index as a two-digit number (e.g., 01, 02) -->
                 <div class="text-4xl font-thin opacity-30 tabular-nums">
                     {{ String(idx + 1).padStart(2, '0') }}
                 </div>
                 <div class="list-col-grow flex flex-col justify-center">
+                    <!-- Date of the release -->
                     <div class="text-gray-300 text-lg mb-1">{{ entry.date }}</div>
+                    <!-- Version number in red, monospace font -->
                     <div class="text-2xl font-mono !text-red mb-1">{{ entry.version }}</div>
+                    <!-- Change description for this version -->
                     <div class="text-lg">{{ entry.changes }}</div>
                 </div>
             </li>
