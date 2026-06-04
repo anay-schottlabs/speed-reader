@@ -324,11 +324,7 @@ const settingsModal = ref(false);
 
             <!-- button to update changes to settings -->
             <button
-                class="mt-5 btn btn-block bg-red transition-opacity duration-200"
-                :class="{
-                    'hover:opacity-80': formText.length !== 0,
-                    'opacity-50 cursor-not-allowed': formText.length == 0
-                }"
+                class="mt-5 btn-red btn-block"
                 @click="updateSettings"
                 :disabled="formText.length == 0"
             >Update</button>

@@ -39,29 +39,28 @@ function navigateTo(path) {
                         {{ HomeScripts.heroContent }}
                     </p>
                     <button
-                        class="btn btn-wide bg-red hover:opacity-80 relative"
+                        class="btn-red btn-wide"
                         @click="navigateTo('/read')"
                     >
-                        <span class="w-full text-center">
+                        <span class="w-full flex items-center justify-center gap-2 ms-2">
                             {{ HomeScripts.heroButton }}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="white"
+                                viewBox="0 0 24 24"
+                                width="28"
+                                height="28"
+                            >
+                                <path
+                                    d="M5 12h14M13 6l6 6-6 6"
+                                    stroke="white"
+                                    stroke-width="2.2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    fill="none"
+                                />
+                            </svg>
                         </span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="white"
-                            viewBox="0 0 24 24"
-                            width="28"
-                            height="28"
-                            class="absolute right-4 top-1/2 -translate-y-1/2"
-                        >
-                            <path
-                                d="M5 12h14M13 6l6 6-6 6"
-                                stroke="white"
-                                stroke-width="2.2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                fill="none"
-                            />
-                        </svg>
                     </button>
                 </div>
             </div>

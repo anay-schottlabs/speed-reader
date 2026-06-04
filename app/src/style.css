@@ -13,3 +13,7 @@ html {
 div, p, button {
     color: white;
 }
+
+.btn-red {
+    @apply btn bg-red disabled:opacity-50 hover:opacity-80;
+}

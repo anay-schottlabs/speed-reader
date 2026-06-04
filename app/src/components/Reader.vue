@@ -382,7 +382,7 @@ window.addEventListener('keydown', (event) => {
 
         <!-- play button -->
         <button
-            class="btn btn-square bg-red transition-opacity duration-200 hover:opacity-80"
+            class="btn-red !btn-square"
             style="width: 3.5rem; height: 3.5rem; min-width: 3.5rem; min-height: 3.5rem;"
             @click="start"
             id="playButton"
@@ -412,7 +412,7 @@ window.addEventListener('keydown', (event) => {
 
         <!-- pause button -->
         <button
-            class="btn btn-square bg-red transition-opacity duration-200 hover:opacity-80"
+            class="btn-red !btn-square"
             style="width: 3.5rem; height: 3.5rem; min-width: 3.5rem; min-height: 3.5rem;"
             @click="pause"
             id="pauseButton"
@@ -436,7 +436,7 @@ window.addEventListener('keydown', (event) => {
 
         <!-- stop/reset button (referred to as "end button") -->
         <button
-            class="btn btn-square bg-red transition-opacity duration-200 hover:opacity-80"
+            class="btn-red !btn-square"
             style="width: 3.5rem; height: 3.5rem; min-width: 3.5rem; min-height: 3.5rem;"
             @click="end"
             id="endButton"
